@@ -1,7 +1,7 @@
 #include "main.h"
 #include "lemlib/api.hpp"
 #include "util.h"
-
+#include "selection.h"
 using namespace pros;
 
 ASSET(path_txt); // TODO: Zach, add the path name here. Add the path to static folder.
@@ -66,8 +66,9 @@ lemlib::Chassis chassis(drivetrain,			// drivetrain settings
 );
 void initialize()
 {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	// pros::lcd::initialize();
+	// pros::lcd::set_text(1, "Hello PROS User!");
+	selector::init();
 }
 
 /**
@@ -121,11 +122,12 @@ void autonomous()
  */
 void opcontrol()
 {
+	pros::Controller master (E_CONTROLLER_MASTER);
 	while (true)
 	{
 		// get left y and right y positions
-		int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+		int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
 		// move the robot
 		chassis.tank(leftY, rightY);
