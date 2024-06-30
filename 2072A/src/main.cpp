@@ -73,7 +73,8 @@ int update_ui()
 {
 	lv_obj_t *override_btn = lv_btn_create(rd_view_obj(auto_override));
 	lv_obj_center(override_btn);
-	lv_obj_add_event_cb(override_btn, [] (lv_event_t *e) {
+	lv_obj_add_event_cb(override_btn, [](lv_event_t *e)
+						{
 		if (lv_event_get_code(e) == LV_EVENT_CLICKED){
 			rd_view_alert(view, "Running autonomous...");
 			selector.run_auton();
@@ -88,7 +89,7 @@ int update_ui()
 	lv_obj_t *calibrate_label = lv_label_create(calibrate_btn);
 	lv_label_set_text(calibrate_label, "Calibrate Inertial");
 	lv_obj_center(calibrate_label);
-	lv_obj_add_event_cb(calibrate_btn, [] (lv_event_t *e) {
+	lv_obj_add_event_cb(calibrate_btn, [](lv_event_t *e) {
 		if (lv_event_get_code(e) == LV_EVENT_CLICKED)
 		{
 			rd_view_alert(view, "Calibrating IMU...");
@@ -100,15 +101,13 @@ int update_ui()
 	lv_obj_t *reset_pose_label = lv_label_create(reset_pose_btn);
 	lv_label_set_text(reset_pose_label, "Reset Pose");
 	lv_obj_center(reset_pose_label);
-	lv_obj_add_event_cb(reset_pose_btn, [] (lv_event_t *e) {
+	lv_obj_add_event_cb(reset_pose_btn, [](lv_event_t *e) {
 		if (lv_event_get_code(e) == LV_EVENT_CLICKED)
 		{
 			rd_view_alert(view, "Calibrating and Reseting...");
 			chassis.calibrate();
 			chassis.resetLocalPosition();
-		}
-	}, LV_EVENT_ALL, NULL);
-
+		} }, LV_EVENT_ALL, NULL);
 	lv_obj_t *imu_heading_label = lv_label_create(rd_view_obj(view));
 	lv_obj_align(imu_heading_label, LV_ALIGN_TOP_LEFT, 5, 5);
 
@@ -122,12 +121,11 @@ int update_ui()
 	lv_obj_align(battery_label, LV_ALIGN_TOP_LEFT, 5, 100);
 	while (true)
 	{
-		
 		lv_label_set_text(imu_heading_label, ("IMU Heading: " + std::to_string(round(imu.get_heading()))).c_str());
 		lv_label_set_text(drive_temp_label, ("Average drive temp: " + std::to_string((left_motor_group.get_temperature() + right_motor_group.get_temperature()) / 2)).c_str());
 		lv_label_set_text(lem_label, ("X: " + std::to_string(chassis.getPose().x) + "\nY: " + std::to_string(chassis.getPose().y) + "\nTheta: " + std::to_string(chassis.getPose().theta)).c_str());
 		lv_label_set_recolor(battery_label, true);
-		((pros::battery::get_voltage() / 12000) * 100) > 50 ? lv_obj_set_style_text_color(battery_label, lv_color_hex(0x00FF00), NULL) : lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFF0000), NULL)  ;
+		((pros::battery::get_voltage() / 12000) * 100) > 50 ? lv_obj_set_style_text_color(battery_label, lv_color_hex(0x00FF00), NULL) : lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFF0000), NULL);
 		lv_label_set_text(battery_label, ("Battery: " + std::to_string((pros::battery::get_voltage() / 12000) * 100) + "%").c_str());
 		pros::delay(100);
 	}
