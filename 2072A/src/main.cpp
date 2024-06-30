@@ -6,6 +6,7 @@ void red_left();
 void red_right();
 void skills();
 
+Controller master(E_CONTROLLER_MASTER);
 rd::Selector selector({{"Red Left", &red_left},
 					   {"Red Right", &red_right},
 					   {"Skills", &skills}});
@@ -13,12 +14,13 @@ rd::Selector selector({{"Red Left", &red_left},
 rd::Console console;
 rd_view_t *view = rd_view_create("Info");
 rd_view_t *auto_override = rd_view_create("Override");
+
 ASSET(example_txt); // TODO: Zach, add the path name here. Add the path to static folder.
 
 // left motor group
 pros::MotorGroup left_motor_group({1, 2, 3});
 // right motor group
-pros::MotorGroup right_motor_group({1, 2, 3});
+pros::MotorGroup right_motor_group({4, 5, 6});
 
 lemlib::Drivetrain drivetrain(&left_motor_group,		  // left motor group
 							  &right_motor_group,		  // right motor group
@@ -106,7 +108,7 @@ int update_ui()
 		{
 			rd_view_alert(view, "Calibrating and Reseting...");
 			chassis.calibrate();
-			chassis.resetLocalPosition();
+			chassis.resetLocalPosition(); 
 		} }, LV_EVENT_ALL, NULL);
 	lv_obj_t *imu_heading_label = lv_label_create(rd_view_obj(view));
 	lv_obj_align(imu_heading_label, LV_ALIGN_TOP_LEFT, 5, 5);
@@ -116,25 +118,51 @@ int update_ui()
 
 	lv_obj_t *lem_label = lv_label_create(rd_view_obj(view));
 	lv_obj_align(lem_label, LV_ALIGN_TOP_LEFT, 5, 45);
+	
+	lv_obj_t *vert_one_label = lv_label_create(rd_view_obj(view));
+	lv_obj_align(vert_one_label, LV_ALIGN_TOP_LEFT, 5, 150);
 
-	lv_obj_t *battery_label = lv_label_create(rd_view_obj(view));
-	lv_obj_align(battery_label, LV_ALIGN_TOP_LEFT, 5, 100);
+	lv_obj_t *horizontal_one_label = lv_label_create(rd_view_obj(view));
+	lv_obj_align(horizontal_one_label, LV_ALIGN_TOP_LEFT, 5, 175);
+
+
 	while (true)
 	{
 		lv_label_set_text(imu_heading_label, ("IMU Heading: " + std::to_string(round(imu.get_heading()))).c_str());
 		lv_label_set_text(drive_temp_label, ("Average drive temp: " + std::to_string((left_motor_group.get_temperature() + right_motor_group.get_temperature()) / 2)).c_str());
 		lv_label_set_text(lem_label, ("X: " + std::to_string(chassis.getPose().x) + "\nY: " + std::to_string(chassis.getPose().y) + "\nTheta: " + std::to_string(chassis.getPose().theta)).c_str());
-		lv_label_set_recolor(battery_label, true);
-		((pros::battery::get_voltage() / 12000) * 100) > 50 ? lv_obj_set_style_text_color(battery_label, lv_color_hex(0x00FF00), NULL) : lv_obj_set_style_text_color(battery_label, lv_color_hex(0xFF0000), NULL);
-		lv_label_set_text(battery_label, ("Battery: " + std::to_string((pros::battery::get_voltage() / 12000) * 100) + "%").c_str());
+		lv_label_set_text(vert_one_label, ("Vertical tracking 1: " + std::to_string(vertical_tracking_wheel.getDistanceTraveled())).c_str());
+		lv_label_set_text(horizontal_one_label, ("Horizontal tracking 1: " + std::to_string(horizontal_tracking_wheel.getDistanceTraveled())).c_str());
 		pros::delay(100);
 	}
 }
+
+bool isPluggedIn(int port) { return !((pros::v5::Device::get_plugged_type(port) == pros::v5::DeviceType::none) || (pros::v5::Device::get_plugged_type(port) == pros::v5::DeviceType::undefined));}
+
 void initialize()
 {
-	// pros::lcd::initialize();
-	// pros::lcd::set_text(1, "Hello PROS User!");
+	master.clear();
 	console.println("Initializing robot...");
+	// Make sure all devices are plugged in...
+	if (!isPluggedIn(imu.get_port()) || pros::v5::Device::get_plugged_type(imu.get_port()) != v5::DeviceType::imu) {
+		master.rumble("---");
+		master.print(0, 0, "check console");
+		console.println("IMU not plugged in!");
+	}
+	for (int i = 0; i < left_motor_group.size(); i++) {
+		if (!isPluggedIn(left_motor_group.get_port(i))) {
+			master.rumble("---");
+			master.print(0, 0, "check console...");
+			console.println((std::to_string(left_motor_group.get_port(i)) + " not plugged in!").c_str());
+		}
+	}
+	for (int i = 0; i < right_motor_group.size(); i++) {
+		if (!isPluggedIn(right_motor_group.get_port(i))) {
+			master.rumble("---");
+			master.print(0, 0, "check console...");
+			console.println((std::to_string(right_motor_group.get_port(i)) + " not plugged in!").c_str());
+		}
+	}
 	Task t(update_ui);
 }
 
@@ -201,8 +229,6 @@ void skills()
 
 void opcontrol()
 {
-	pros::Controller master(E_CONTROLLER_MASTER);
-
 	while (true)
 	{
 		// get left y and right y positions
