@@ -1,0 +1,28 @@
+#PATH-POINTS-START Path
+-119.846,-24.915,473.377,180
+-119.815,-26.914,446.145
+-119.561,-28.897,406.926
+-119.026,-30.822,363.281
+-118.172,-32.627,342.49
+-116.993,-34.238,354.45
+-115.537,-35.606,391.549
+-113.883,-36.727,437.523
+-112.101,-37.632,480.416
+-110.24,-38.364,509.297
+-108.333,-38.965,538.415
+-106.398,-39.472,557.057
+-104.447,-39.912,572.589
+-102.487,-40.309,585.886
+-100.523,-40.683,597.691
+-98.557,-41.052,591.378
+-96.593,-41.431,580.806
+-94.634,-41.834,570.158
+-92.684,-42.278,561.902
+-90.747,-42.776,550.297
+-88.83,-43.344,537.832
+-86.94,-43.998,524.47
+-85.089,-44.754,510.427
+-83.29,-45.628,496.29
+-82,-46.362,489.493,120
+-82,-46.362,0,120
+#PATH.JERRYIO-DATA {"appVersion":"0.7.0","format":"path.jerryio v0.1.x (cm, rpm)","gc":{"robotWidth":15,"robotHeight":15,"robotIsHolonomic":false,"showRobot":true,"uol":2.54,"pointDensity":0.7874015748031495,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}}},"paths":[{"segments":[{"controls":[{"uid":"MNtwswlCSX","x":-47.18352513628104,"y":-9.809206541490004,"lock":false,"visible":true,"heading":180,"__type":"end-point"},{"uid":"lLvyn0DH5B","x":-47.43185947910357,"y":-17.25923682616596,"lock":false,"visible":true,"__type":"control"},{"uid":"M9ytoCZ3ra","x":-37.99515445184737,"y":-14.775893397940639,"lock":false,"visible":true,"__type":"control"},{"uid":"KHVt5s7sNT","x":-32.28346456692913,"y":-18.252574197456084,"lock":false,"visible":true,"heading":120,"__type":"end-point"}],"speedProfiles":[{"uid":"k1Md4xX9UW","xPos":0,"yPos":1,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"UaoUTD2Gou"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":600,"label":"600"},"step":1,"from":0,"to":600},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.224}},"name":"Path","uid":"rS81HTbI1w","lock":false,"visible":true}]}
