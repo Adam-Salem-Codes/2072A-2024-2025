@@ -141,6 +141,20 @@ Chassis chassis(drivetrain,			// drivetrain settings
 				sensors				// odometry sensors
 );
 
+
+void lift_move(int angle)
+{
+	int current_angle;
+	// probably not the best way to do this but I'm lazy and don't want to do PID rn... I miss EZ pid	
+		while (angle - (current_angle = (lift_encoder.get_position() / 100 * 0.2) + 10) <= 2.5)
+		{
+				lift.move(127);
+		}
+			while (angle - (current_angle = (lift_encoder.get_position() / 100 * 0.2) + 10) >= 2.5)
+			{
+					lift.move(-50);
+			}
+	}
 /**
  * A function to create/update the user interface elements with buttons, labels, and event callbacks.
  *
@@ -258,6 +272,7 @@ void check_device_plugged_in(int port, std::string deviceName)
  */
 void initialize()
 {
+	
 	master.clear();
 	mogo.retract();
 		claw.extend();
@@ -493,15 +508,15 @@ void opcontrol()
 			intake.move(-127);
 		}
 		else if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
-			intake.move(127);
+			intake.move(127); // SLOWER TO AVOID LIFT DAMAGE.
 		else
 		 	intake.move(0);
 		
 		if (master.get_digital(E_CONTROLLER_DIGITAL_L2)){
-			lift.move(127);
+			lift.move(-127);
 		}
 		else if (master.get_digital(E_CONTROLLER_DIGITAL_L1))
-			lift.move(-127);
+			lift.move(30);
 		else{
 		 	lift.brake();
 
@@ -509,9 +524,9 @@ void opcontrol()
 		}
 
 		if(master.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT))
-			skills();
+			lift_move(50);
 
-
+		// FOR REFERENCE, LIFT 50 deg is parrellel to the ground, 90-100 is fully up.
 		//if ((lift_encoder.get_position() / 100 * 0.2) > 15)
 		//	master.rumble("-");
 		
