@@ -65,6 +65,7 @@ class Selector {
 	void focus();
 
 	/// @}
+	std::string name;
 
   private:
 	rd_view_t *view;
@@ -73,7 +74,6 @@ class Selector {
 	lv_obj_t *selected_label;
 	lv_obj_t *selected_img;
 
-	std::string name;
 	std::vector<rd::Selector::routine_t> routines;
 	rd::Selector::routine_t *selected_routine;
 
